@@ -21,11 +21,15 @@
   1  Nov 2010 - fixed setTime bug (thanks to Korman for this)
 */
 
+#ifdef ARDUINO
 #if ARDUINO >= 100
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
+#else /* ARDUINO */
+extern unsigned long millis();
+#endif /* ARDUINO */
 
 #include "Time.h"
 
