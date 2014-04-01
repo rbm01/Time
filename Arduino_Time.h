@@ -12,7 +12,11 @@
 
 #include <inttypes.h>
 
+#ifdef ARDUINO
 typedef unsigned long time_t;
+#else /* ARDUINO */
+#include <time.h>
+#endif /* ARDUINO */
 
 typedef enum {timeNotSet, timeNeedsSync, timeSet
 }  timeStatus_t ;
