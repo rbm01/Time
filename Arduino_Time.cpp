@@ -176,7 +176,7 @@ void breakTime(time_t time, tmElements_t &tm){
 
   year = 0;
   days = 0;
-  while((unsigned)(days += (LEAP_YEAR(year) ? 366 : 365)) <= time) {
+  while((days += (LEAP_YEAR(year) ? 366 : 365)) <= (unsigned)time) {
     year++;
   }
   tm.Year = year; // year is offset from 1970
