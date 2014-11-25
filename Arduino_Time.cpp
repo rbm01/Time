@@ -31,7 +31,7 @@
 extern unsigned long millis();
 #endif /* ARDUINO */
 
-#include "Time.h"
+#include "Arduino_Time.h"
 
 static tmElements_t tm;          // a cache of time elements
 static time_t       cacheTime;   // the time the cache was updated

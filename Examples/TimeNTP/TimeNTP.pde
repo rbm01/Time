@@ -5,7 +5,7 @@
  * This sketch uses the Ethenet library with the user contributed UdpBytewise extension
  */
  
-#include <Time.h> 
+#include <Arduino_Time.h> 
 #include <Ethernet.h>
 #include <UdpBytewise.h>  // UDP library from: bjoern@cs.stanford.edu 12/30/2008 
 #if  UDP_TX_PACKET_MAX_SIZE <64 ||  UDP_RX_PACKET_MAX_SIZE < 64

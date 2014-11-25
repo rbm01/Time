@@ -4,7 +4,7 @@
  * 
  */
 
-#include <Time.h>
+#include <Arduino_Time.h>
 #include <TinyGPS.h>       //http://arduiniana.org/libraries/TinyGPS/
 #include <NewSoftSerial.h>  //http://arduiniana.org/libraries/newsoftserial/
 // GPS and NewSoftSerial libraries are the work of Mikal Hart

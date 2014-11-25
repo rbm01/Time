@@ -9,7 +9,7 @@
  * A Processing example sketch to automatically send the messages is inclided in the download
  */ 
  
-#include <Time.h>  
+#include <Arduino_Time.h>  
 
 #define TIME_MSG_LEN  11   // time sync to PC is HEADER followed by unix time_t as ten ascii digits
 #define TIME_HEADER  'T'   // Header tag for serial time sync message

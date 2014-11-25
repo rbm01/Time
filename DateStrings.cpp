@@ -8,7 +8,7 @@
  */
  
 #include <avr/pgmspace.h> 
-#include "Time.h"
+#include "Arduino_Time.h"
  
 // the short strings for each day or month must be exactly dt_SHORT_STR_LEN
 #define dt_SHORT_STR_LEN  3 // the length of short strings
