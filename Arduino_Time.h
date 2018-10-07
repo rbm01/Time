@@ -18,6 +18,9 @@ typedef unsigned long time_t;
 #include <time.h>
 #endif /* ARDUINO */
 
+// Enable variable "sysUnsyncedTime" for measuring clock drift.
+#define TIME_DRIFT_INFO
+
 typedef enum {timeNotSet, timeNeedsSync, timeSet
 }  timeStatus_t ;
 
