@@ -16,11 +16,14 @@
 #include <sys/types.h> // for __time_t_defined, but avr libc lacks sys/types.h
 #endif
 
-
-#if !defined(__time_t_defined) // avoid conflict with newlib or other posix libc
+#ifdef ARDUINO
 typedef unsigned long time_t;
-#endif
+#else /* ARDUINO */
+#include <time.h>
+#endif /* ARDUINO */
 
+// Enable variable "sysUnsyncedTime" for measuring clock drift.
+#define TIME_DRIFT_INFO
 
 // This ugly hack allows us to define C++ overloaded functions, when included
 // from within an extern "C", as newlib's sys/stat.h does.  Actually it is
@@ -117,9 +120,10 @@ int     month(time_t t);   // the month for the given time
 int     year();            // the full four digit year: (2009, 2010 etc) 
 int     year(time_t t);    // the year for the given time
 
-time_t now();              // return the current time as seconds since Jan 1 1970 
-void    setTime(time_t t);
-void    setTime(int hr,int min,int sec,int day, int month, int yr);
+time_t  now(int16_t *thousandths = 0); /* return the current time as seconds since Jan 1 1970 
+                                        * plus optional thousandths of sec */
+void    setTime(time_t t, int16_t mS = 0);
+void    setTime(int hr,int min,int sec,int day, int month, int yr, int16_t mS = 0);
 void    adjustTime(long adjustment);
 
 /* date strings */ 
