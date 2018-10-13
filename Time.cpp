@@ -259,32 +259,38 @@ time_t sysUnsyncedTime = 0; // the time sysTime unadjusted by sync
 #endif
 
 
-time_t now(int16_t *thousandths){
-  // ensures lastMillis is treated as a 32-bit value
-  uint32_t lastMillis = prevMillis;
+time_t now(int16_t *thousandths) {
+    uint32_t milliSeconds;
 
-  // calculate number of seconds passed since last call to now()
-  while( millis() - lastMillis >= 1000){
-    // millis() and prevMillis are both unsigned ints thus the subtraction will always be the absolute value of the difference
-    sysTime++;
-    lastMillis += 1000;
+    // ensures lastMillis is treated as a 32-bit value
+    uint32_t lastMillis = prevMillis;
+
+    // calculate number of seconds passed since last call to now()
+    // milliseconds and prevMillis are both unsigned ints thus the
+    // subtraction will always be the absolute value of the difference
+    while ((milliSeconds = millis()) - lastMillis >= 1000)
+    {
+        sysTime++;
+        lastMillis += 1000;
 #ifdef TIME_DRIFT_INFO
-    sysUnsyncedTime++; // this can be compared to the synced time to measure long term drift
+        sysUnsyncedTime++; // this can be compared to the synced time to measure long term drift
 #endif
-  }
-  if (thousandths)
-      *thousandths = (int16_t)(millis() - lastMillis);
-  if(nextSyncTime <= sysTime){
-      if(getTimePtr != 0) {
-	  time_t t = getTimePtr();
-          if( t != 0)
-              setTime(t);
-          else
-              Status = (Status == timeNotSet) ?  timeNotSet : timeNeedsSync;
-      }
-  }
-  prevMillis = lastMillis;
-  return sysTime;
+    }
+
+    if (thousandths)
+        *thousandths = (int16_t)(milliSeconds - lastMillis);
+
+    if(nextSyncTime <= sysTime){
+        if(getTimePtr != 0) {
+            time_t t = getTimePtr();
+            if( t != 0)
+                setTime(t);
+            else
+                Status = (Status == timeNotSet) ?  timeNotSet : timeNeedsSync;
+        }
+    }
+    prevMillis = lastMillis;
+    return sysTime;
 }
 
 /*
