@@ -22,7 +22,8 @@ typedef unsigned long time_t;
 #include <time.h>
 #endif /* ARDUINO */
 
-// Enable variable "sysUnsyncedTime" for measuring clock drift.
+// Enable variables "sysUnsyncedTime" and "sysUnsyncedTimePrevMillis"
+// for measuring clock drift.
 #define TIME_DRIFT_INFO
 
 // This ugly hack allows us to define C++ overloaded functions, when included

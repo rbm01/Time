@@ -251,34 +251,36 @@ static uint32_t prevMillis = 0;
 static uint32_t nextSyncTime = 0;
 static timeStatus_t Status = timeNotSet;
 
-getExternalTime getTimePtr;  // pointer to external sync function
-//setExternalTime setTimePtr; // not used in this version
-
 #ifdef TIME_DRIFT_INFO   // define this to get drift data
-time_t sysUnsyncedTime = 0; // the time sysTime unadjusted by sync
+static uint32_t sysUnsyncedTimePrevMillis = 0; // like prevMillis, but unadjusted by sync
+time_t sysUnsyncedTime = 0; // sysTime, but unadjusted by sync
 #endif
 
+getExternalTime getTimePtr;  // pointer to external sync function
+//setExternalTime setTimePtr; // not used in this version
 
 time_t now(int16_t *thousandths) {
     uint32_t milliSeconds;
 
-    // ensures lastMillis is treated as a 32-bit value
-    uint32_t lastMillis = prevMillis;
-
     // calculate number of seconds passed since last call to now()
     // milliseconds and prevMillis are both unsigned ints thus the
     // subtraction will always be the absolute value of the difference
-    while ((milliSeconds = millis()) - lastMillis >= 1000)
+    while ((milliSeconds = millis()) - prevMillis >= 1000)
     {
         sysTime++;
-        lastMillis += 1000;
-#ifdef TIME_DRIFT_INFO
-        sysUnsyncedTime++; // this can be compared to the synced time to measure long term drift
-#endif
+        prevMillis += 1000;
     }
 
     if (thousandths)
-        *thousandths = (int16_t)(milliSeconds - lastMillis);
+        *thousandths = (int16_t)(milliSeconds - prevMillis);
+
+#ifdef TIME_DRIFT_INFO
+    while (milliSeconds - sysUnsyncedTimePrevMillis >= 1000)
+    {
+        sysUnsyncedTimePrevMillis += 1000;
+        sysUnsyncedTime++; // this can be compared to the synced time to measure long term drift
+    }
+#endif /* TIME_DRIFT_INFO */
 
     if(nextSyncTime <= sysTime){
         if(getTimePtr != 0) {
@@ -289,7 +291,6 @@ time_t now(int16_t *thousandths) {
                 Status = (Status == timeNotSet) ?  timeNotSet : timeNeedsSync;
         }
     }
-    prevMillis = lastMillis;
     return sysTime;
 }
 
@@ -299,15 +300,19 @@ time_t now(int16_t *thousandths) {
  * than millis().
  */
 void setTime(time_t t, int16_t mS){
-#ifdef TIME_DRIFT_INFO
- if(sysUnsyncedTime == 0)
-   sysUnsyncedTime = t;   // store the time of the first call to set a valid Time
-#endif
-
   sysTime = t;
   nextSyncTime = t + syncInterval;
   Status = timeSet;
   prevMillis = (uint32_t)(millis() - mS);  // restart counting from now (thanks to Korman for this fix)
+
+#ifdef TIME_DRIFT_INFO
+  if(sysUnsyncedTime == 0)
+  {
+    sysUnsyncedTime = t;   // store the time of the first call to set a valid Time
+    sysUnsyncedTimePrevMillis = prevMillis;
+  }
+#endif /* TIME_DRIFT_INFO */
+
 }
 
 void setTime(int hr,int min,int sec,int dy, int mnth, int yr, int16_t mS){
